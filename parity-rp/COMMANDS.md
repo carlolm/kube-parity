@@ -82,6 +82,14 @@ $ kubectl create -f parity-ingress.yml && \
 $ kubectl delete ingress parity-ingress --namespace parity-rp && \
   kubectl delete deployment haproxy-ingress --namespace parity-rp && \
   kubectl delete service haproxy-ingress --namespace parity-rp
+
+# Restart
+$ kubectl delete ingress parity-ingress --namespace parity-rp && \
+  kubectl delete deployment haproxy-ingress --namespace parity-rp && \
+  kubectl delete service haproxy-ingress --namespace parity-rp && \
+  kubectl create -f parity-ingress.yml && \
+  kubectl create -f haproxy-ingress-deployment.yml && \
+  kubectl create -f haproxy-ingress-svc.yml
 ```
 
 
