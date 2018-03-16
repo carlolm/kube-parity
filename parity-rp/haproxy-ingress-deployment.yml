@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: haproxy-ingress
-        image: quay.io/jcmoraisjr/haproxy-ingress
+        image: ruoshan/haproxy-ingress
         args:
         - --default-backend-service=parity-rp/parity-node
         - --default-ssl-certificate=parity-rp/tls-secret
