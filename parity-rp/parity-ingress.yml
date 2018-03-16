@@ -10,7 +10,7 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: parity-tier
+          serviceName: parity-node
           servicePort: 8545
   tls:
   - secretName: nginx-ssl

@@ -1,16 +1,21 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: parity-tier
+  name: parity-node
   namespace: parity-rp
+  labels:
+    run: parity-node
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      run: parity-node
   template:
     metadata:
-      name: parity-tier
+      name: parity-node
       labels:
-        app: parity-app
         tier: parity
+        run: parity-node
     spec:
       containers:
         - name: parity
@@ -48,19 +53,16 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: parity-tier
+  name: parity-node
   namespace: parity-rp
   labels:
-    app: parity-app
+    run: parity-node
 spec:
   type: NodePort
   ports:
-  - port: 80
-    protocol: TCP
-    name: http
   - port: 8545
     protocol: TCP
     name: rpc-port
     targetPort: 8545
   selector:
-    app: parity-app
+    run: parity-node
