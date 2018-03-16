@@ -17,5 +17,9 @@ spec:
     port: 443
     protocol: TCP
     targetPort: 443
+  - name: port-3
+    port: 1936
+    protocol: TCP
+    targetPort: 1936
   selector:
     run: haproxy-ingress

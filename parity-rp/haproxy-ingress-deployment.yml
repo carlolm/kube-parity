@@ -28,6 +28,8 @@ spec:
           containerPort: 8545
         - name: https
           containerPort: 443
+        - name: stat
+          containerPort: 1936
         env:
         - name: POD_NAME
           valueFrom:
