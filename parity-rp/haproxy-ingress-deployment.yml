@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: haproxy-ingress
+  name: haproxy-ingress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: haproxy-ingress
+  template:
+    metadata:
+      namespace: parity-rp
+      labels:
+        run: haproxy-ingress
+    spec:
+      containers:
+      - name: haproxy-ingress
+        image: quay.io/jcmoraisjr/haproxy-ingress
+        args:
+        - --default-backend-service=parity-rp/parity-tier
+        - --default-ssl-certificate=parity-rp/tls-secret
+        - --configmap=$(POD_NAMESPACE)/haproxy-configmap
+        - --reload-strategy=native
+        ports:
+        - name: http
+          containerPort: 8545
+        - name: https
+          containerPort: 443
+        - name: stat
+          containerPort: 1936
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace

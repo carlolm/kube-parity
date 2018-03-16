@@ -1,0 +1,66 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: parity-tier
+  namespace: parity-rp
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: parity-tier
+      labels:
+        app: parity-app
+        tier: parity
+    spec:
+      containers:
+        - name: parity
+          image: "parity/parity:stable-release"
+          imagePullPolicy: IfNotPresent
+          command: ["/parity/parity"]
+          args: ["--config", "/config/config.toml"]
+          ports:
+            - containerPort: 8545
+              protocol: TCP
+            - containerPort: 30303
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: 8545
+            initialDelaySeconds: 60
+          volumeMounts:
+            - name: parity-config
+              mountPath: /config
+              readOnly: true
+        - name: event-watcher
+          # TEMPORARY TEST IMAGE
+          image: "yzhang1994/eth-node-checker"
+          imagePullPolicy: IfNotPresent
+          command: ["npm"]
+          args: ["start"]
+          env:
+            - name: "WEB3_URL"
+              value: "http://localhost:8545"
+      volumes:
+      - name: parity-config
+        configMap:
+          name: parity-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: parity-tier
+  namespace: parity-rp
+  labels:
+    app: parity-app
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    protocol: TCP
+    name: http
+  - port: 8545
+    protocol: TCP
+    name: rpc-port
+    targetPort: 8545
+  selector:
+    app: parity-app
