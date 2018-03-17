@@ -3,6 +3,8 @@ kind: Ingress
 metadata:
   name: parity-ingress
   namespace: parity-rp
+  annotations:
+     kubernetes.io/ingress.class: haproxy
 spec:
   rules:
   - host: geth-ropsten.coinalpha.com
