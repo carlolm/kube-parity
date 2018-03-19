@@ -36,6 +36,8 @@ spec:
             - name: parity-config
               mountPath: /config
               readOnly: true
+            - name: parity-data
+              mountPath: /data
         - name: event-watcher
           # TEMPORARY TEST IMAGE
           image: "yzhang1994/eth-node-checker"
@@ -49,20 +51,8 @@ spec:
       - name: parity-config
         configMap:
           name: parity-config
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: parity-node
-  namespace: parity-rp
-  labels:
-    run: parity-node
-spec:
-  type: NodePort
-  ports:
-  - port: 8545
-    protocol: TCP
-    name: rpc-port
-    targetPort: 8545
-  selector:
-    run: parity-node
+      - name: parity-data
+        hostPath:
+          path: "/mnt/disks/ssd0"
+      nodeSelector:
+        cloud.google.com/gke-local-ssd: "true"

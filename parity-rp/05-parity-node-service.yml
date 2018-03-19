@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: parity-service
+  namespace: parity-rp
+  labels:
+    run: parity-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8545
+    protocol: TCP
+    name: rpc-port
+    targetPort: 8545
+  selector:
+    run: parity-service
