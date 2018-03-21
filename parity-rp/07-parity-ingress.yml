@@ -5,7 +5,12 @@ metadata:
   namespace: parity-rp
   annotations:
      kubernetes.io/ingress.class: nginx
+     nginx.org/ssl-services: parity-service
 spec:
+  tls:
+  - secretName: tls-certificate
+    hosts:
+    - geth-ropsten.coinalpha.com
   rules:
   - host: geth-ropsten.coinalpha.com
     http:
@@ -14,7 +19,3 @@ spec:
         backend:
           serviceName: parity-service
           servicePort: 8545
-  tls:
-  - secretName: parity-ssl
-    hosts:
-    - geth-ropsten.coinalpha.com

@@ -1,43 +1,42 @@
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: apps/v1beta1
+kind: StatefulSet
 metadata:
-  name: parity-node
+  name: parity-set
   namespace: parity-rp
   labels:
-    run: parity-node
+    app: parity-set
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      run: parity-node
+      app: parity-set
+  serviceName: parity-set
   template:
     metadata:
-      name: parity-node
+      name: parity-set
       labels:
-        tier: parity
-        run: parity-node
+        app: parity-set
     spec:
       containers:
         - name: parity
           image: "parity/parity:stable-release"
           imagePullPolicy: IfNotPresent
           command: ["/parity/parity"]
-          args: ["--config", "/config/config.toml"]
+          args: ["--config", "/parity-config/config.toml"]
           ports:
             - containerPort: 8545
               protocol: TCP
-            - containerPort: 30303
-              protocol: TCP
+              name: rcp-port
           livenessProbe:
             tcpSocket:
               port: 8545
             initialDelaySeconds: 60
           volumeMounts:
             - name: parity-config
-              mountPath: /config
+              mountPath: /parity-config
               readOnly: true
             - name: parity-data
-              mountPath: /data
+              mountPath: /parity-data
         - name: event-watcher
           # TEMPORARY TEST IMAGE
           image: "yzhang1994/eth-node-checker"
@@ -51,8 +50,13 @@ spec:
       - name: parity-config
         configMap:
           name: parity-config
-      - name: parity-data
-        hostPath:
-          path: "/mnt/disks/ssd0"
-      nodeSelector:
-        cloud.google.com/gke-local-ssd: "true"
+  volumeClaimTemplates:
+  - metadata:
+      name: parity-data
+      namespace: parity-rp
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: "parity-ssd"
+      resources:
+        requests:
+          storage: 200Gi
