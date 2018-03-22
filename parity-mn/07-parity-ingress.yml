@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: mainnet-ingress
+  namespace: mainnet
+  annotations:
+     kubernetes.io/ingress.class: nginx
+spec:
+  tls:
+  - secretName: tls-mainnet
+    hosts:
+    - geth-mainnet.coinalpha.com
+  rules:
+  - host: geth-mainnet.coinalpha.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: parity-mainnet
+          servicePort: 8545
+
+# $ kubectl delete ing mainnet-ingress --namespace mainnet

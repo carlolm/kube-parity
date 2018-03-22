@@ -1,0 +1,125 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: parity-mainnet
+  namespace: mainnet
+  labels:
+    app: parity-mainnet
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: parity-mainnet
+  serviceName: parity-mainnet
+  template:
+    metadata:
+      name: parity-mainnet
+      labels:
+        app: parity-mainnet
+    spec:
+      containers:
+        - name: parity
+          image: "parity/parity:stable-release"
+          imagePullPolicy: IfNotPresent
+          command: ["/parity/parity"]
+          args: ["--config", "/parity-config/config.toml"]
+          ports:
+            - containerPort: 8545
+              protocol: TCP
+              name: rcp-port
+          livenessProbe:
+            tcpSocket:
+              port: 8545
+            initialDelaySeconds: 60
+          volumeMounts:
+            - name: parity-config
+              mountPath: /parity-config
+              readOnly: true
+            - name: parity-data
+              mountPath: /parity-data
+        - name: event-watcher
+          # TEMPORARY TEST IMAGE
+          image: "yzhang1994/eth-node-checker"
+          imagePullPolicy: IfNotPresent
+          command: ["npm"]
+          args: ["start"]
+          env:
+            - name: "WEB3_URL"
+              value: "http://localhost:8545"
+      volumes:
+      - name: parity-config
+        secret:
+          secretName: parity-config
+  volumeClaimTemplates:
+  - metadata:
+      name: parity-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: "mainnet-ssd"
+      resources:
+        requests:
+          storage: 250Gi
+# $ kubectl delete sts parity-mainnet --namespace mainnet
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: parity-ropsten
+  namespace: ropsten
+  labels:
+    app: parity-ropsten
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: parity-ropsten
+  serviceName: parity-ropsten
+  template:
+    metadata:
+      name: parity-ropsten
+      labels:
+        app: parity-ropsten
+    spec:
+      containers:
+        - name: parity
+          image: "parity/parity:stable-release"
+          imagePullPolicy: IfNotPresent
+          command: ["/parity/parity"]
+          args: ["--config", "/parity-config/config.toml"]
+          ports:
+            - containerPort: 8545
+              protocol: TCP
+              name: rcp-port
+          livenessProbe:
+            tcpSocket:
+              port: 8545
+            initialDelaySeconds: 60
+          volumeMounts:
+            - name: parity-config
+              mountPath: /parity-config
+              readOnly: true
+            - name: parity-data
+              mountPath: /parity-data
+        - name: event-watcher
+          # TEMPORARY TEST IMAGE
+          image: "yzhang1994/eth-node-checker"
+          imagePullPolicy: IfNotPresent
+          command: ["npm"]
+          args: ["start"]
+          env:
+            - name: "WEB3_URL"
+              value: "http://localhost:8545"
+      volumes:
+      - name: parity-config
+        secret:
+          secretName: parity-config
+  volumeClaimTemplates:
+  - metadata:
+      name: parity-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: "ropsten-ssd"
+      resources:
+        requests:
+          storage: 200Gi
+# $ kubectl delete sts parity-ropsten --namespace ropsten

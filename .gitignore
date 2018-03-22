@@ -2,3 +2,4 @@
 config.toml
 *.crt
 *.key
+*.pem

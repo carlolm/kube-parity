@@ -1,0 +1,44 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: mainnet-ingress
+  namespace: mainnet
+  annotations:
+     kubernetes.io/ingress.class: nginx
+spec:
+  tls:
+  - secretName: tls-mainnet
+    hosts:
+    - geth-mainnet.coinalpha.com
+  rules:
+  - host: geth-mainnet.coinalpha.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: parity-mainnet
+          servicePort: 8545
+# $ kubectl delete ing mainnet-ingress --namespace mainnet
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ropsten-ingress
+  namespace: ropsten
+  annotations:
+     kubernetes.io/ingress.class: nginx
+spec:
+  tls:
+  - secretName: tls-ropsten
+    hosts:
+    - geth-ropsten.coinalpha.com
+  rules:
+  - host: geth-ropsten.coinalpha.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: parity-ropsten
+          servicePort: 8545
+
+# $ kubectl delete ing ropsten-ingress --namespace ropsten

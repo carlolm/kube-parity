@@ -1,0 +1,21 @@
+# NOTE: Configured for Google Cloud
+
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: mainnet-ssd
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
+  zones: us-west1-a
+reclaimPolicy: Retain
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: ropsten-ssd
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
+  zones: us-west1-a
+reclaimPolicy: Retain

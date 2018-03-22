@@ -1,21 +1,21 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: parity-ropsten
-  namespace: ropsten
+  name: parity-mainnet
+  namespace: mainnet
   labels:
-    app: parity-ropsten
+    app: parity-mainnet
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
-      app: parity-ropsten
-  serviceName: parity-ropsten
+      app: parity-mainnet
+  serviceName: parity-mainnet
   template:
     metadata:
-      name: parity-ropsten
+      name: parity-mainnet
       labels:
-        app: parity-ropsten
+        app: parity-mainnet
     spec:
       containers:
         - name: parity
@@ -55,9 +55,9 @@ spec:
       name: parity-data
     spec:
       accessModes: ["ReadWriteOnce"]
-      storageClassName: "ropsten-ssd"
+      storageClassName: "mainnet-ssd"
       resources:
         requests:
-          storage: 200Gi
+          storage: 250Gi
 
-# $ kubectl delete sts parity-ropsten --namespace ropsten
+# $ kubectl delete sts parity-mainnet --namespace mainnet

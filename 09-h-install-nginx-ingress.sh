@@ -1,0 +1,2 @@
+helm install --name nginx-ingress-mn stable/nginx-ingress --set rbac.create=true --namespace mainnet && \
+helm install --name nginx-ingress-rp stable/nginx-ingress --set rbac.create=true --namespace ropsten

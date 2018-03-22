@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mainnet
+  labels:
+    name: mainnet
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ropsten
+  labels:
+    name: ropsten
